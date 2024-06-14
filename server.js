@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require("cors");
+const cors = require('cors');
 
 // routes
 const firestoreRoutes = require('./app/routes/firestore.routes.js');
@@ -9,24 +9,28 @@ const placeRoutes = require('./app/routes/place.routes.js');
 
 const app = express();
 const PORT = 8080;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
 
+// CORS options
 var corsOptions = {
     origin: "*",
 };
 
+// Middleware
 app.use(cors(corsOptions));
-
-// parse requests of content-type - application/json
 app.use(express.json());
 
+// Simple route
 app.get("/", (req, res) => {
     res.json({ message: "rodex go" });
 });
 
-firestoreRoutes(app);
-authRoutes(app);
-userRoutes(app);
-placeRoutes(app);
+// Routes
+app.use('/api/firestore', firestoreRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/places', placeRoutes);
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
